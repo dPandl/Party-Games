@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Party Games</title>
+    <!-- Die Links sollten relativ sein und nicht das Unterverzeichnis enthalten -->
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="icon" href="/icons/icon-any.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/icons/icon-any.svg" />
+    <meta name="theme-color" content="#111827" />
+    <!-- Verwendet das aktualisierte Tag für die mobile Web-App-Fähigkeit -->
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+      html {
+        /* Passt die Stamm-Schriftgröße an die Breite des Ansichtsfensters an, um eine flüssige Skalierung zu ermöglichen */
+        font-size: clamp(12px, calc(8px + 1vw), 18px);
+      }
+      body {
+        font-family: 'Nunito', sans-serif;
+        overscroll-behavior: none;
+      }
+      .tap-highlight-transparent {
+        -webkit-tap-highlight-color: transparent;
+      }
+      .perspective {
+        perspective: 1000px;
+      }
+      .transform-style-preserve-3d {
+        transform-style: preserve-3d;
+      }
+      .backface-hidden {
+        backface-visibility: hidden;
+        -webkit-backface-visibility: hidden;
+      }
+      .rotate-y-180 {
+        transform: rotateY(180deg);
+      }
+    </style>
+    <style>
+      /* --- HIGH CONTRAST MODE --- */
+      body.high-contrast {
+        background-color: #000000 !important;
+        color: #ffffff !important;
+      }
+      .high-contrast [class*="bg-gray-"],
+      .high-contrast [class*="bg-slate-"] {
+        background-color: #000000 !important;
+        border: 1px solid #ffffff;
+      }
+      /* Specific override for Krimi Klub selected buttons */
+      .high-contrast .bg-slate-500 {
+        background-color: #ffffff !important;
+        color: #000000 !important;
+      }
+      .high-contrast .bg-black\/70 {
+        background-color: rgba(0, 0, 0, 0.9) !important;
+      }
+
+      /* --- Reveal Cards High Contrast --- */
+      /* This section styles both the draggable top card and the content card underneath. */
+      
+      /* Base style: Black background, prepares for border */
+      .high-contrast div.cursor-grab,
+      .high-contrast .relative > div.absolute[class*="bg-red-800"],
+      .high-contrast .relative > div.absolute[class*="bg-blue-800"],
+      .high-contrast .relative > div.absolute[class*="bg-indigo-800"] {
+        background-color: #000000 !important;
+        background-image: none !important;
+        border: 3px solid;
+      }
+
+      /* Text on draggable card should be white */
+      .high-contrast div.cursor-grab * {
+          color: #ffffff !important;
+      }
+      
+      /* --- Border Colors --- */
+      
+      /* Impostor Party Theme (Teal/Blue -> Cyan Border) */
+      .high-contrast div.cursor-grab[class*="from-teal-"],
+      .high-contrast .relative > div.absolute.bg-blue-800 { 
+        border-color: #00ffff !important; /* Cyan */
+      }
+      
+      /* Agenten Undercover Theme (Purple/Pink -> Magenta Border) */
+      .high-contrast div.cursor-grab[class*="from-purple-"],
+      .high-contrast .relative > div.absolute.bg-indigo-800 {
+        border-color: #ff00ff !important; /* Magenta */
+      }
+      
+      /* Impostor/Spy cards always get a red border */
+      .high-contrast .relative > div.absolute.bg-red-800 {
+        border-color: #ff0000 !important; /* Red */
+      }
+
+      /* FIX: Macht schwarze Drähte bei Bombenkommando im Kontrastmodus sichtbar. */
+      .high-contrast .bomb-wire[style*="background-color: black"] {
+        border: 2px solid #ffffff !important;
+        box-sizing: border-box;
+      }
+
+      .high-contrast [class*="text-gray-"],
+      .high-contrast [class*="text-slate-"] {
+        color: #dddddd !important;
+      }
+      
+      /* FIX: Stellt sicher, dass Abstimmungs-Buttons in Rastern (wie bei Agenten Undercover) weißen Text haben.
+         Dies ist ein spezifischerer Selektor, um konkurrierende Stile zu überschreiben. */
+      .high-contrast .grid > button[class*="bg-gray-"] {
+        color: #ffffff !important;
+      }
+      
+      /* Highly specific rule to ensure setup screen titles are ALWAYS white. */
+      .high-contrast h1.bg-clip-text {
+        color: #ffffff !important;
+      }
+
+      /* Ensure other gradient text like player names or results are white. */
+      .high-contrast p.bg-clip-text,
+      .high-contrast span.bg-clip-text {
+        color: #ffffff !important;
+      }
+      
+      /* Set themed colors for instruction modal titles (h2) in high contrast mode. */
+      .high-contrast h2.bg-clip-text[class*="from-teal-"],
+      .high-contrast h2.bg-clip-text[class*="to-blue-"] { 
+        color: #00ffff !important; /* Cyan */ 
+      }
+      .high-contrast h2.bg-clip-text[class*="from-purple-"],
+      .high-contrast h2.bg-clip-text[class*="from-indigo-"],
+      .high-contrast h2.bg-clip-text[class*="to-pink-"] { 
+        color: #ff00ff !important; /* Magenta */ 
+      }
+      .high-contrast h2.bg-clip-text[class*="from-yellow-"],
+      .high-contrast h2.bg-clip-text[class*="to-orange-"] { 
+        color: #ffff00 !important; /* Yellow */ 
+      }
+      .high-contrast h2.bg-clip-text[class*="from-lime-"],
+      .high-contrast h2.bg-clip-text[class*="to-green-"] { 
+        color: #adff2f !important; /* Lime */ 
+      }
+      .high-contrast h2.bg-clip-text[class*="from-red-"] { 
+        color: #ff0000 !important; /* Red */ 
+      }
+      .high-contrast h2.bg-clip-text[class*="from-slate-"] { 
+        color: #ffffff !important; /* White */ 
+      }
+
+      .high-contrast .text-transparent {
+        color: transparent !important; /* Keep original transparent for bg-clip */
+      }
+      .high-contrast .high-contrast-text-black {
+        color: #000000 !important;
+      }
+      .high-contrast .bg-gradient-to-br,
+      .high-contrast .bg-gradient-to-r,
+      .high-contrast .bg-gradient-to-b {
+        background-image: none !important;
+      }
+      .high-contrast input, .high-contrast textarea, .high-contrast select {
+        background-color: #111111 !important;
+        border: 1px solid #ffffff !important;
+        color: #ffffff !important;
+      }
+      .high-contrast input:focus, .high-contrast textarea:focus, .high-contrast select:focus {
+        border-color: #ffff00 !important;
+        --tw-ring-color: #ffff00 !important;
+      }
+      .high-contrast .ring-blue-500 { --tw-ring-color: #ffff00 !important; }
+      .high-contrast .accent-blue-500 { accent-color: #ffff00; }
+      .high-contrast .backdrop-blur-md { backdrop-filter: none; }
+      .high-contrast [class*="shadow-"] {
+        box-shadow: none !important;
+        --tw-shadow: 0 0 #0000 !important;
+        --tw-shadow-colored: 0 0 #0000 !important;
+      }
+      
+      /* Theme Colors */
+      .high-contrast .from-teal-500, .high-contrast .from-teal-400, .high-contrast .bg-teal-600, .high-contrast .bg-blue-600, .high-contrast .bg-blue-500, .high-contrast .from-blue-500 {
+        background-color: #00ffff !important; /* Cyan */
+      }
+      .high-contrast .text-teal-300, .high-contrast .text-teal-400, .high-contrast .text-blue-300, .high-contrast .text-blue-400 { color: #00ffff !important; }
+      
+      .high-contrast .from-purple-600, .high-contrast .from-purple-500, .high-contrast .from-purple-400, .high-contrast .bg-purple-600, .high-contrast .bg-purple-500, .high-contrast .to-pink-600,
+      .high-contrast .from-indigo-600, .high-contrast .from-indigo-400, .high-contrast .bg-indigo-600, .high-contrast .bg-indigo-500, .high-contrast .from-indigo-500 {
+        background-color: #ff00ff !important; /* Magenta */
+      }
+      .high-contrast .text-purple-300, .high-contrast .text-purple-400, .high-contrast .text-pink-500, .high-contrast .text-indigo-400 { color: #ff00ff !important; }
+      
+      .high-contrast .from-yellow-400, .high-contrast .from-yellow-500, .high-contrast .bg-orange-500, .high-contrast .bg-orange-600 { 
+        background-color: #ffff00 !important; /* Yellow */
+      }
+      .high-contrast .from-lime-500, .high-contrast .bg-lime-600 { 
+        background-color: #adff2f !important; /* Lime */
+      }
+       .high-contrast .from-slate-600, .high-contrast .from-slate-800,
+       .high-contrast .from-slate-300, .high-contrast .from-slate-400, .high-contrast .from-slate-500 {
+        background-color: #ffffff !important;
+      }
+
+      /* Set text to black SPECIFICALLY on buttons or cards that get a light background */
+      .high-contrast button[class*="from-red-"],
+      .high-contrast button[class*="bg-red-"],
+      .high-contrast button[class*="from-yellow-"],
+      .high-contrast button[class*="bg-orange-"],
+      .high-contrast button[class*="from-lime-"],
+      .high-contrast button[class*="bg-lime-"],
+      .high-contrast button[class*="bg-green-"],
+      .high-contrast button[class*="from-teal-"],
+      .high-contrast button[class*="bg-teal-"],
+      .high-contrast button[class*="to-blue-"],
+      .high-contrast button[class*="bg-blue-"],
+      .high-contrast button[class*="from-blue-"],
+      .high-contrast button[class*="bg-indigo-"],
+      .high-contrast button[class*="from-indigo-"],
+      .high-contrast button[class*="from-purple-"],
+      .high-contrast button[class*="bg-purple-"],
+      .high-contrast button[class*="to-pink-"],
+      .high-contrast button[class*="from-slate-"],
+      .high-contrast div[class*="from-slate-"] {
+        color: #000000 !important;
+      }
+      
+      .high-contrast .text-orange-300, .high-contrast .text-orange-400, .high-contrast .text-yellow-400 { color: #ffff00 !important; }
+      
+      .high-contrast .from-red-700, .high-contrast .from-red-600, .high-contrast .from-red-500, .high-contrast .from-red-300, .high-contrast .bg-red-600, .high-contrast [class*="bg-red-700"], .high-contrast [class*="bg-red-800"] { background-color: #ff0000 !important; /* Red */ }
+      .high-contrast .text-red-300, .high-contrast .text-red-400 { color: #ff0000 !important; }
+      
+      .high-contrast .text-lime-300, .high-contrast .text-lime-400 { color: #adff2f !important; }
+      
+      .high-contrast .text-green-300, .high-contrast .text-green-400 { color: #00ff00 !important; }
+      .high-contrast .bg-green-600 { background-color: #00ff00 !important; }
+      
+      .high-contrast .ring-indigo-400 { --tw-ring-color: #ff00ff !important; }
+      
+      /* FIX: Macht die Auswahl von Spielern bei Werwölfe im Kontrastmodus besser sichtbar. */
+      .high-contrast .ring-indigo-500 {
+        box-shadow: 0 0 0 3px #00ffff !important;
+      }
+
+      /* FIX: Stellt die Lesbarkeit der Rolle des Werwolf-Opfers im Kontrastmodus sicher. */
+      .high-contrast button[class*="bg-red-800"] p {
+        color: #000000 !important;
+      }
+
+      /* Components */
+      .high-contrast .border-teal-400 { border-color: #ffffff !important; }
+      .high-contrast #bottleGlass stop { stop-color: #ffff00 !important; }
+      .high-contrast .splash-gradient { color: #ffffff !important; background-image: none !important; }
+
+      /* FIX: Macht den "Verlassen"-Button bei Werwölfe im Kontrastmodus sichtbar. */
+      .high-contrast .ww-exit-button {
+        background-color: #ff0000 !important; /* Grelles Rot */
+        color: #000000 !important; /* Schwarzer Text */
+      }
+      /* FIX: Macht das "X" im "Verlassen"-Button bei Wort-Akrobaten im Kontrastmodus sichtbar. */
+      .high-contrast .wa-exit-button svg {
+        stroke: #ff0000 !important; /* Grelles Rot */
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react/": "https://esm.sh/react@^19.1.1/",
+    "react": "https://esm.sh/react@^19.1.1",
+    "react-dom/": "https://esm.sh/react-dom@^19.1.1/",
+    "path": "https://esm.sh/path@^0.12.7",
+    "vite": "https://esm.sh/vite@^7.0.6",
+    "url": "https://esm.sh/url@^0.11.4",
+    "react-icons/": "https://esm.sh/react-icons@5/"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+  <body class="bg-gray-900 text-white antialiased">
+    <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
+  </body>
+</html>

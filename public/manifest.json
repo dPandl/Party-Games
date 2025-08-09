@@ -1,0 +1,24 @@
+{
+  "name": "Party Games",
+  "short_name": "Party Games",
+  "description": "Eine Sammlung lustiger und interaktiver Partyspiele für Freunde und Familie. Enthält eine Vielzahl von Spielen für jeden Anlass.",
+  "start_url": "/Party-Games/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#111827",
+  "theme_color": "#111827",
+  "icons": [
+    {
+      "src": "icons/icon-any.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-maskable.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}
