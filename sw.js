@@ -1,4 +1,4 @@
-const CACHE_NAME = 'party-game-cache-v13'; // Version erhöht, um Update zu erzwingen
+const CACHE_NAME = 'party-game-cache-v15'; // Aggressives Cache-Busting
 
 // Kern-Dateien, die für die Offline-Funktionalität der App zwischengespeichert werden MÜSSEN.
 const APP_SHELL_URLS = [
@@ -12,7 +12,7 @@ const APP_SHELL_URLS = [
   '/Party-Games/fonts/Nunito-VariableFont.woff2',
 ];
 
-// Installieren: App Shell zwischenspeichern.
+// Installieren: App Shell zwischenspeichern und sofort aktivieren.
 self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE_NAME)
@@ -20,13 +20,14 @@ self.addEventListener('install', event => {
         console.log('[ServiceWorker] Caching app shell');
         return cache.addAll(APP_SHELL_URLS);
       })
+      .then(() => self.skipWaiting()) // Erzwingt, dass der neue SW sofort aktiv wird
       .catch(error => {
         console.error('[ServiceWorker] Failed to cache app shell:', error);
       })
   );
 });
 
-// Aktivieren: Alte Caches aufräumen.
+// Aktivieren: Alte Caches aufräumen und Kontrolle übernehmen.
 self.addEventListener('activate', event => {
   event.waitUntil(
     caches.keys().then(cacheNames => {
@@ -35,9 +36,10 @@ self.addEventListener('activate', event => {
           .filter(name => name !== CACHE_NAME)
           .map(name => caches.delete(name))
       );
-    })
+    }).then(() => self.clients.claim()) // Übernimmt sofort die Kontrolle über offene Clients
   );
 });
+
 
 // Fetch: Aus dem Cache bereitstellen, auf Netzwerk zurückgreifen und neue Anfragen zwischenspeichern.
 self.addEventListener('fetch', event => {
