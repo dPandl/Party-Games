@@ -1,4 +1,4 @@
-const CACHE_NAME = 'party-game-cache-v15'; // Aggressives Cache-Busting
+const CACHE_NAME = 'party-game-cache-v16'; // Aggressives Cache-Busting
 
 // Kern-Dateien, die für die Offline-Funktionalität der App zwischengespeichert werden MÜSSEN.
 const APP_SHELL_URLS = [
