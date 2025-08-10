@@ -13,14 +13,19 @@
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+      @font-face {
+        font-family: 'Nunito';
+        font-style: normal;
+        font-weight: 200 1000;
+        font-display: swap;
+        src: url('/Party-Games/fonts/Nunito-VariableFont.woff2') format('woff2');
+      }
+    </style>
     <style>
       html {
         /* Passt die Stamm-Schriftgröße an die Breite des Ansichtsfensters an, um eine flüssige Skalierung zu ermöglichen */
         font-size: clamp(12px, calc(8px + 1vw), 18px);
-        overscroll-behavior: none;
       }
       body {
         font-family: 'Nunito', sans-serif;

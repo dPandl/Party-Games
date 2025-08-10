@@ -1,4 +1,4 @@
-const CACHE_NAME = 'party-game-cache-v10'; // Version erhöht, um Update zu erzwingen
+const CACHE_NAME = 'party-game-cache-v12'; // Version erhöht, um Update zu erzwingen
 
 // Kern-Dateien, die für die Offline-Funktionalität der App zwischengespeichert werden MÜSSEN.
 const APP_SHELL_URLS = [
@@ -9,6 +9,7 @@ const APP_SHELL_URLS = [
   '/Party-Games/icons/icon-any.svg',
   '/Party-Games/icons/icon-maskable.svg',
   '/Party-Games/audio/bomb_squad_music.ogg',
+  '/Party-Games/fonts/Nunito-VariableFont.woff2',
 ];
 
 // Installieren: App Shell zwischenspeichern.
